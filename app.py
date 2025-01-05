@@ -52,7 +52,7 @@ def main():
 
                 if llm:
                     analyst = get_agent(data, llm)
-                    chat_window(analyst)
+                    chat_window(analyst, llm_type)
             except Exception as e:
                 st.error(f"Error processing file: {str(e)}")
                 st.warning("Assurez-vous que vos données ne contiennent pas des formats complexes de dates")
@@ -78,7 +78,7 @@ def get_LLM(llm_type,user_api_key):
     except Exception as e:
         st.error("No/Incorrect API key provided! Please Provide/Verify your API key")
 
-def chat_window(analyst):
+def chat_window(analyst, llm_type):
     with st.chat_message("assistant"):
         st.text("Explorer vos données avec Satelix LLM Insights ?🧐")
 
@@ -103,7 +103,9 @@ def chat_window(analyst):
        
         try:
             with st.spinner("Analyzing..."):
-                response = analyst.chat(f"Réponds en français à la question suivante : {user_question}")
+                if llm_type == 'gpt-4o-mini': 
+                    response = analyst.chat(f"Réponds en français à la question suivante : {user_question}")
+                response = analyst.chat(user_question)
                 st.write(response)
                 st.session_state.messages.append({"role":"assistant","response":response})
         
