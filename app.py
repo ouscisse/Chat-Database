@@ -41,7 +41,6 @@ def main():
 
             st.markdown("⚠️ :green[*Assurez-vous que la 1ère ligne du fichier \
                                     contient les noms des colonnes.*]")
-
             llm_type = st.selectbox(
                 "🤖 Choix du LLM",
                 ('gemini-1.5-flash', 'gpt-4o-mini'), index=0)
@@ -54,7 +53,7 @@ def main():
                                 tuple(data.keys()), index=0)
                 st.dataframe(data[df])
 
-                llm = get_LLM(llm_type, st.secrets["GOOGLE_API_KEY"])
+                llm = get_LLM(llm_type, st.secrets["GOOGLE_API_KEY"]) #user_api_key)
 
                 if llm:
                     analyst = get_agent(data, llm)
@@ -67,12 +66,12 @@ def main():
 
 def get_LLM(llm_type,user_api_key):
     try:
-        # elif llm_type =='gemini-1.5-flash':
-        if llm_type =='gemini-1.5-flash':
+        if llm_type =='gemini-1.5-flash': 
             genai.configure(api_key= st.secrets["OPENAI_API_KEY"])
             llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", 
                                          temperature=0.3,
                                          google_api_key = st.secrets["GOOGLE_API_KEY"])
+
         elif llm_type == 'gpt-4o-mini':
             openai.api_key = st.secrets["OPENAI_API_KEY"]
             llm = ChatOpenAI(
@@ -80,6 +79,7 @@ def get_LLM(llm_type,user_api_key):
                 temperature=0.3,
                 api_key= st.secrets["OPENAI_API_KEY"]
             )
+
         return llm
     except Exception as e:
         st.error("No/Incorrect API key provided! Please Provide/Verify your API key")
