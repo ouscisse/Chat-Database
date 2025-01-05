@@ -73,6 +73,7 @@ def get_LLM(llm_type,user_api_key):
                 temperature=0.3,
                 api_key= st.secrets["OPENAI_API_KEY"]
             )
+        llm.system_message = "Vous êtes un assistant IA qui répond toujours en français."
         return llm
     except Exception as e:
         st.error("No/Incorrect API key provided! Please Provide/Verify your API key")
