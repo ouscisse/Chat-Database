@@ -54,7 +54,7 @@ def main():
                                 tuple(data.keys()), index=0)
                 st.dataframe(data[df])
 
-                llm = get_LLM(llm_type, os.getenv('GOOGLE_API_KEY'))
+                llm = get_LLM(llm_type, st.secrets["GOOGLE_API_KEY"])
 
                 if llm:
                     analyst = get_agent(data, llm)
