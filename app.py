@@ -71,7 +71,8 @@ def get_LLM(llm_type,user_api_key):
             llm = ChatOpenAI(
                 model="gpt-4o-mini",
                 temperature=0.3,
-                api_key= st.secrets["OPENAI_API_KEY"])
+                api_key= st.secrets["OPENAI_API_KEY"]
+            )
         return llm
     except Exception as e:
         st.error("No/Incorrect API key provided! Please Provide/Verify your API key")
