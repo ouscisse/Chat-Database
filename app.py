@@ -52,7 +52,7 @@ def main():
 
                 if llm:
                     analyst = get_agent(data, llm)
-                    chat_window(analyst, llm_type)
+                    chat_window(analyst)
             except Exception as e:
                 st.error(f"Error processing file: {str(e)}")
                 st.warning("Assurez-vous que vos données ne contiennent pas des formats complexes de dates")
@@ -65,20 +65,18 @@ def get_LLM(llm_type,user_api_key):
             genai.configure(api_key= st.secrets["OPENAI_API_KEY"])
             llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", 
                                          temperature=0.3,
-                                         google_api_key = st.secrets["GOOGLE_API_KEY"],
-                                         language="fr")
+                                         google_api_key = st.secrets["GOOGLE_API_KEY"])
         elif llm_type == 'gpt-4o-mini':
             openai.api_key = st.secrets["OPENAI_API_KEY"]
             llm = ChatOpenAI(
                 model="gpt-4o-mini",
                 temperature=0.3,
-                api_key= st.secrets["OPENAI_API_KEY"],
-                language="fr")
+                api_key= st.secrets["OPENAI_API_KEY"])
         return llm
     except Exception as e:
         st.error("No/Incorrect API key provided! Please Provide/Verify your API key")
 
-def chat_window(analyst, llm_type):
+def chat_window(analyst):
     with st.chat_message("assistant"):
         st.text("Explorer vos données avec Satelix LLM Insights ?🧐")
 
@@ -103,9 +101,7 @@ def chat_window(analyst, llm_type):
        
         try:
             with st.spinner("Analyzing..."):
-                if llm_type == 'gpt-4o-mini': 
-                    response = analyst.chat(f"Réponds en français à la question suivante : {user_question}")
-                response = analyst.chat(user_question)
+                response = analyst.chat(f"Answer the following question in French : {user_question}")
                 st.write(response)
                 st.session_state.messages.append({"role":"assistant","response":response})
         
