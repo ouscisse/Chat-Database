@@ -3,7 +3,6 @@ import pandas as pd
 from pathlib import Path
 from langchain_google_genai import ChatGoogleGenerativeAI
 import google.generativeai as genai
-from dotenv import load_dotenv
 from pandasai import SmartDataframe
 from pandasai import SmartDatalake
 from pandasai.llm import BambooLLM
@@ -15,8 +14,6 @@ import openai
 import builtins 
 from PIL import Image
 
-load_dotenv(dotenv_path='.env')
-
 data = {}
 
 def main():
@@ -27,12 +24,14 @@ def main():
 
     st.title("Satelix Data Insights ✨")
 
-    password = st.sidebar.text_input("Entrez le mot de passe", type="password")
+    st.sidebar.image("Satelix1.png", width=250)
 
+    password = st.sidebar.text_input("Entrez le mot de passe", type="password")
+    
     if password == st.secrets["pwd"]:
 
         with st.sidebar:
-            st.image("Satelix1.png", width=250)
+            # st.image("Satelix1.png", width=250)
             st.title("⚙️ Configuration")
             st.text("📝 Data")
             file_upload = st.file_uploader("Uploader votre fichier",
