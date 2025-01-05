@@ -1,0 +1,14 @@
+pandas
+numpy==1.26.4
+seaborn
+plotly
+streamlit
+pandasai
+pyYAML
+langchain_google_genai
+langchain_openai
+langchain_nvidia_ai_endpoints
+google-generativeai
+python-dotenv
+xlrd
+openpyxl
