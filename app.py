@@ -101,7 +101,7 @@ def chat_window(analyst):
        
         try:
             with st.spinner("Analyzing..."):
-                response = analyst.chat(f"Answer the following question in French : {user_question}")
+                response = analyst.chat(user_question)
                 st.write(response)
                 st.session_state.messages.append({"role":"assistant","response":response})
         
