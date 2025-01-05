@@ -65,15 +65,15 @@ def get_LLM(llm_type,user_api_key):
             genai.configure(api_key= st.secrets["OPENAI_API_KEY"])
             llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", 
                                          temperature=0.3,
-                                         google_api_key = st.secrets["GOOGLE_API_KEY"])
+                                         google_api_key = st.secrets["GOOGLE_API_KEY"],
+                                         language="fr")
         elif llm_type == 'gpt-4o-mini':
             openai.api_key = st.secrets["OPENAI_API_KEY"]
             llm = ChatOpenAI(
                 model="gpt-4o-mini",
                 temperature=0.3,
-                api_key= st.secrets["OPENAI_API_KEY"]
-            )
-        llm.system_message = "Vous êtes un assistant IA qui répond toujours en français."
+                api_key= st.secrets["OPENAI_API_KEY"],
+                language="fr")
         return llm
     except Exception as e:
         st.error("No/Incorrect API key provided! Please Provide/Verify your API key")
@@ -103,7 +103,7 @@ def chat_window(analyst):
        
         try:
             with st.spinner("Analyzing..."):
-                response = analyst.chat(user_question)
+                response = analyst.chat(f"Réponds en français à la question suivante : {user_question}")
                 st.write(response)
                 st.session_state.messages.append({"role":"assistant","response":response})
         
