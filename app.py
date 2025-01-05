@@ -6,9 +6,6 @@ import google.generativeai as genai
 from pandasai import SmartDataframe
 from pandasai import SmartDatalake
 from pandasai.llm import BambooLLM
-from pandasai import SmartDataframe
-from pandasai import SmartDatalake
-from pandasai.llm import BambooLLM
 from pandasai import Agent
 from pandasai.responses.streamlit_response import StreamlitResponse
 import os
@@ -28,14 +25,13 @@ def main():
     st.title("Satelix Data Insights ✨")
 
     st.sidebar.image("Satelix1.png", width=250)
-    st.sidebar.image("Satelix1.png", width=250)
 
     password = st.sidebar.text_input("Entrez le mot de passe", type="password")
-    
     
     if password == st.secrets["pwd"]:
 
         with st.sidebar:
+            # st.image("Satelix1.png", width=250)
             st.title("⚙️ Configuration")
             st.text("📝 Data")
             file_upload = st.file_uploader("Uploader votre fichier",
@@ -49,7 +45,6 @@ def main():
                 ('gemini-1.5-flash', 'gpt-4o-mini'), index=0)
 
 
-
         if file_upload is not None:
             try:
                 data = extract_dataframes(file_upload)
@@ -57,7 +52,7 @@ def main():
                                 tuple(data.keys()), index=0)
                 st.dataframe(data[df])
 
-                llm = get_LLM(llm_type, st.secrets["GOOGLE_API_KEY"])
+                llm = get_LLM(llm_type, st.secrets["GOOGLE_API_KEY"]) #user_api_key)
 
                 if llm:
                     analyst = get_agent(data, llm)
@@ -71,12 +66,10 @@ def main():
 def get_LLM(llm_type,user_api_key):
     try:
         if llm_type =='gemini-1.5-flash': 
-        if llm_type =='gemini-1.5-flash': 
             genai.configure(api_key= st.secrets["OPENAI_API_KEY"])
             llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", 
                                          temperature=0.3,
                                          google_api_key = st.secrets["GOOGLE_API_KEY"])
-
 
         elif llm_type == 'gpt-4o-mini':
             openai.api_key = st.secrets["OPENAI_API_KEY"]
@@ -85,7 +78,6 @@ def get_LLM(llm_type,user_api_key):
                 temperature=0.3,
                 api_key= st.secrets["OPENAI_API_KEY"]
             )
-
 
         return llm
     except Exception as e:
@@ -167,7 +159,6 @@ def extract_dataframes(raw_file):
                 for col in df.select_dtypes(include=['datetime64']).columns:
                     df[col] = df[col].astype(str)
                 dfs[sheet_name] = df
-
 
         return dfs
     except Exception as e:
