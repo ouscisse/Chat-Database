@@ -3,7 +3,6 @@ import pandas as pd
 from pathlib import Path
 from langchain_google_genai import ChatGoogleGenerativeAI
 import google.generativeai as genai
-from dotenv import load_dotenv
 from pandasai import SmartDataframe
 from pandasai import SmartDatalake
 from pandasai.llm import BambooLLM
@@ -15,8 +14,6 @@ import openai
 import builtins 
 from PIL import Image
 
-load_dotenv(dotenv_path='.env')
-
 data = {}
 
 def main():
@@ -27,12 +24,13 @@ def main():
 
     st.title("Satelix Data Insights ✨")
 
-    password = st.sidebar.text_input("Entrez le mot de passe", type="password")
+    st.sidebar.image("Satelix1.png", width=250)
 
+    password = st.sidebar.text_input("Entrez le mot de passe", type="password")
+    
     if password == st.secrets["pwd"]:
 
         with st.sidebar:
-            st.image("Satelix1.png", width=250)
             st.title("⚙️ Configuration")
             st.text("📝 Data")
             file_upload = st.file_uploader("Uploader votre fichier",
@@ -41,7 +39,6 @@ def main():
 
             st.markdown("⚠️ :green[*Assurez-vous que la 1ère ligne du fichier \
                                     contient les noms des colonnes.*]")
-
             llm_type = st.selectbox(
                 "🤖 Choix du LLM",
                 ('gemini-1.5-flash', 'gpt-4o-mini'), index=0)
@@ -54,7 +51,7 @@ def main():
                                 tuple(data.keys()), index=0)
                 st.dataframe(data[df])
 
-                llm = get_LLM(llm_type, os.getenv('GOOGLE_API_KEY'))
+                llm = get_LLM(llm_type, st.secrets["GOOGLE_API_KEY"])
 
                 if llm:
                     analyst = get_agent(data, llm)
@@ -67,12 +64,12 @@ def main():
 
 def get_LLM(llm_type,user_api_key):
     try:
-        # elif llm_type =='gemini-1.5-flash':
-        if llm_type =='gemini-1.5-flash':
+        if llm_type =='gemini-1.5-flash': 
             genai.configure(api_key= st.secrets["OPENAI_API_KEY"])
             llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", 
                                          temperature=0.3,
                                          google_api_key = st.secrets["GOOGLE_API_KEY"])
+
         elif llm_type == 'gpt-4o-mini':
             openai.api_key = st.secrets["OPENAI_API_KEY"]
             llm = ChatOpenAI(
@@ -80,6 +77,7 @@ def get_LLM(llm_type,user_api_key):
                 temperature=0.3,
                 api_key= st.secrets["OPENAI_API_KEY"]
             )
+
         return llm
     except Exception as e:
         st.error("No/Incorrect API key provided! Please Provide/Verify your API key")
