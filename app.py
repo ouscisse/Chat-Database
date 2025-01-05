@@ -3,6 +3,10 @@ import pandas as pd
 from pathlib import Path
 from langchain_google_genai import ChatGoogleGenerativeAI
 import google.generativeai as genai
+from dotenv import load_dotenv
+from pandasai import SmartDataframe
+from pandasai import SmartDatalake
+from pandasai.llm import BambooLLM
 from pandasai import Agent
 from pandasai.responses.streamlit_response import StreamlitResponse
 import os
@@ -10,6 +14,8 @@ from langchain_openai import ChatOpenAI
 import openai
 import builtins 
 from PIL import Image
+
+load_dotenv(dotenv_path='.env')
 
 data = {}
 
@@ -20,7 +26,6 @@ def main():
                        layout="wide")
 
     st.title("Satelix Data Insights ✨")
-
 
     password = st.sidebar.text_input("Entrez le mot de passe", type="password")
 
@@ -36,10 +41,11 @@ def main():
 
             st.markdown("⚠️ :green[*Assurez-vous que la 1ère ligne du fichier \
                                     contient les noms des colonnes.*]")
- 
+
             llm_type = st.selectbox(
                 "🤖 Choix du LLM",
                 ('gemini-1.5-flash', 'gpt-4o-mini'), index=0)
+
 
         if file_upload is not None:
             try:
@@ -48,7 +54,7 @@ def main():
                                 tuple(data.keys()), index=0)
                 st.dataframe(data[df])
 
-                llm = get_LLM(llm_type, st.secrets["GOOGLE_API_KEY"]) 
+                llm = get_LLM(llm_type, os.getenv('GOOGLE_API_KEY'))
 
                 if llm:
                     analyst = get_agent(data, llm)
@@ -61,6 +67,7 @@ def main():
 
 def get_LLM(llm_type,user_api_key):
     try:
+        # elif llm_type =='gemini-1.5-flash':
         if llm_type =='gemini-1.5-flash':
             genai.configure(api_key= st.secrets["OPENAI_API_KEY"])
             llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", 
@@ -153,6 +160,7 @@ def extract_dataframes(raw_file):
                 for col in df.select_dtypes(include=['datetime64']).columns:
                     df[col] = df[col].astype(str)
                 dfs[sheet_name] = df
+
         return dfs
     except Exception as e:
         st.error(f"Error processing file: {str(e)}")
